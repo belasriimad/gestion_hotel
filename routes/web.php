@@ -1,0 +1,72 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/','ContentsController@index')->name('home');
+Route::get('/login',[
+    'uses'=>'ClientController@getLogin',
+    'as'=>'clients.login'
+]);
+Route::post('/login',[
+    'uses'=>'ClientController@login',
+    'as'=>'clients.login'
+]);
+Route::get('admin/login',[
+    'uses'=>'AdminsController@getLogin',
+    'as'=>'admins.login'
+]);
+Route::post('admin/login',[
+    'uses'=>'AdminsController@login',
+    'as'=>'admins.login'
+]);
+Route::resource('/contents','ContentsController');
+Route::resource('/clients','ClientController');
+Route::resource('/reservations','ReservationsController');
+Route::resource('/rooms','RoomsController');
+Route::resource('/contacts','ContactsController');
+Route::resource('/admins','AdminsController');
+Route::group(['middleware'=>'auth'],function(){
+    Route::get('/logout',[
+        'uses'=>'ClientController@logout',
+        'as'=>'clients.logout'
+    ]);
+});
+Route::group(['middleware'=>'admin'],function(){
+    Route::get('admin/logout',[
+        'uses'=>'AdminsController@logout',
+        'as'=>'admins.logout'
+    ]);
+    Route::get('/delete/{id}/client',[
+        'uses'=>'ClientController@destroy',
+        'as'=>'client.delete'
+    ]);
+    Route::get('/delete/{id}/contactMessage',[
+        'uses'=>'ContactsController@destroy',
+        'as'=>'contacts.delete'
+    ]);
+    Route::get('/delete/{id}/admin',[
+        'uses'=>'AdminsController@destroy',
+        'as'=>'admins.delete'
+    ]);
+    Route::get('/contacts',[
+        'uses'=>'ContactsController@index',
+        'as'=>'contacts.index'
+    ]);
+    Route::get('/clients',[
+        'uses'=>'ClientController@index',
+        'as'=>'clients.index'
+    ]);
+    Route::post('/update/{id}/client',[
+        'uses'=>'ClientController@update',
+        'as'=>'client.update'
+    ]);
+});
